@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="2026 울산 U잼 영상 공모전 기획 도우미. 소재만 넣으면 제목·대본·장면·AI 영상 프롬프트·자막·출품 체크리스트를 만들어 줍니다.">
+<title>U잼 영상 기획 도우미</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ground:#F5F7FA; --surface:#FFFFFF; --sunken:#EEF2F7; --line:#E1E6EE; --line-strong:#CBD3DF;
+  --ink:#16202E; --muted:#5F6B7C; --faint:#93A0B2;
+  --accent:#0E7C86; --accent-ink:#FFFFFF; --accent-soft:#DDF3F4; --accent-line:#9ED8DC;
+  --hot:#F0553B; --hot-soft:#FDE6E1;
+  --gold:#F5B400; --gold-soft:#FFF4CC; --gold-ink:#6B4E00;
+  --ok:#1B9A55; --ok-soft:#DDF5E7;
+  --shadow:0 1px 2px rgba(22,32,46,.04),0 10px 30px -14px rgba(22,32,46,.2);
+  --r:14px; --r-sm:9px;
+  --display:"Do Hyeon","Noto Sans KR",system-ui,sans-serif;
+  --body:"Noto Sans KR",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#121820; --surface:#1B232E; --sunken:#151C25; --line:#2A3542; --line-strong:#3A4757;
+    --ink:#EDF1F6; --muted:#A3AFBF; --faint:#6F7C8E;
+    --accent:#3FBAC4; --accent-ink:#06262A; --accent-soft:#12343A; --accent-line:#245C62;
+    --hot:#FF7A63; --hot-soft:#3D2420;
+    --gold:#FFD25E; --gold-soft:#3A311A; --gold-ink:#FFE7A3;
+    --ok:#4ADE80; --ok-soft:#163B26;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#121820; --surface:#1B232E; --sunken:#151C25; --line:#2A3542; --line-strong:#3A4757;
+  --ink:#EDF1F6; --muted:#A3AFBF; --faint:#6F7C8E;
+  --accent:#3FBAC4; --accent-ink:#06262A; --accent-soft:#12343A; --accent-line:#245C62;
+  --hot:#FF7A63; --hot-soft:#3D2420;
+  --gold:#FFD25E; --gold-soft:#3A311A; --gold-ink:#FFE7A3;
+  --ok:#4ADE80; --ok-soft:#163B26;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+html{height:100%}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6;padding-inline:16px;padding-block:0 48px;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:anywhere}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:640px;margin:0 auto}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--ground) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);margin-inline:-16px;padding-inline:16px;border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:56px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-size:21px;line-height:1}
+.brand .mark{width:26px;height:16px;border-radius:4px;background:var(--accent);position:relative;flex:none}
+.brand .mark::after{content:"";position:absolute;left:10px;top:4px;border-left:7px solid var(--accent-ink);border-top:4px solid transparent;border-bottom:4px solid transparent}
+.histbtn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--line-strong);background:var(--surface);font-size:13px;font-weight:500}
+.histbtn .n{min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--ink);color:var(--ground);font-size:12px;font-weight:700;display:inline-grid;place-items:center;font-variant-numeric:tabular-nums}
+
+.intro{padding-block:22px 10px}
+.intro h1{font-family:var(--display);font-weight:400;font-size:30px;line-height:1.2;margin:0 0 6px;text-wrap:balance}
+.intro h1 em{font-style:normal;color:var(--accent)}
+.intro p{margin:0;color:var(--muted);font-size:14px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.rules{margin-bottom:12px;padding:0;overflow:hidden}
+.rules summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;font-weight:700;font-size:14px}
+.rules summary::-webkit-details-marker{display:none}
+.rules summary .tag{font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--gold-ink);background:var(--gold-soft);padding:2px 8px;border-radius:6px}
+.rules summary .chev{margin-left:auto;color:var(--faint);transition:transform .2s}
+.rules[open] summary .chev{transform:rotate(180deg)}
+.rules .body{padding:0 16px 14px;border-top:1px solid var(--line)}
+.spec{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:12px 0}
+.spec div{background:var(--sunken);border-radius:var(--r-sm);padding:8px 10px}
+.spec b{display:block;font-size:11px;color:var(--faint);font-weight:700;letter-spacing:.04em}
+.spec span{font-size:14px;font-weight:700}
+.rules p{margin:6px 0 0;font-size:13px;color:var(--muted)}
+.rules .req{font-weight:700;color:var(--hot)}
+
+.form{display:grid;gap:14px;box-shadow:var(--shadow)}
+.lab{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.lab small{text-transform:none;letter-spacing:0;font-weight:400}
+textarea#topic{width:100%;min-height:74px;resize:vertical;border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:12px;background:var(--sunken);line-height:1.5}
+textarea#topic:focus,input#audience:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+input#audience{width:100%;border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:10px 12px;background:var(--sunken)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips.scroll{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px;padding-bottom:2px}
+.chips.scroll::-webkit-scrollbar{display:none}
+.chip{flex:none;height:34px;padding:0 13px;border-radius:999px;border:1px solid var(--line-strong);background:var(--surface);font-size:13px;font-weight:500;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.chip.spot{background:var(--sunken);border-color:transparent;color:var(--ink)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:420px){.row2{grid-template-columns:1fr}}
+.btns{display:grid;gap:8px}
+.go{display:flex;align-items:center;justify-content:center;gap:8px;height:50px;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-size:16px;font-weight:700;width:100%;transition:transform .08s}
+.go:active{transform:scale(.985)}
+.go[disabled]{opacity:.6;cursor:wait}
+.go.ai{background:var(--surface);color:var(--ink);border:1.5px solid var(--line-strong);height:46px;font-size:15px}
+.go.ai b{color:var(--accent);font-family:var(--display);font-weight:400;font-size:17px}
+.stop{height:40px;border-radius:10px;border:1px solid var(--line-strong);font-size:13px;font-weight:500;padding:0 14px}
+.status{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);min-height:20px}
+.status .dot{width:8px;height:8px;border-radius:50%;background:var(--faint);flex:none}
+.status.on .dot{background:var(--ok)}
+.status.busy .dot{background:var(--hot);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.3}}
+@media (prefers-reduced-motion:reduce){.status.busy .dot{animation:none}}
+.progress{display:none;gap:10px;align-items:center}
+.progress.show{display:flex}
+.bar{flex:1;height:6px;border-radius:999px;background:var(--sunken);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:999px;transition:width .4s}
+
+.result{margin-top:22px;display:grid;gap:14px}
+.rhead{display:grid;gap:8px}
+.rhead .topic{font-family:var(--display);font-size:24px;line-height:1.25;margin:0;text-wrap:balance}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.badge{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.04em}
+.badge.ai{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-line)}
+.badge.tpl{background:var(--sunken);color:var(--muted);border:1px solid var(--line-strong)}
+.badge.ex{background:var(--gold-soft);color:var(--gold-ink);border:1px solid color-mix(in srgb,var(--gold) 60%,transparent)}
+.badge.div{background:var(--hot-soft);color:var(--hot)}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 13px;border-radius:999px;border:1px solid var(--line-strong);background:var(--surface);font-size:13px;font-weight:500;white-space:nowrap}
+.btn.primary{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.btn.danger{color:var(--hot)}
+.nav{position:sticky;top:calc(56px + env(safe-area-inset-top,0px));z-index:15;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;background:var(--ground);padding-block:8px;margin-inline:-16px;padding-inline:16px}
+.nav::-webkit-scrollbar{display:none}
+.nav a{flex:none;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--muted);font-size:13px;text-decoration:none;font-weight:500}
+.nav a b{font-family:var(--display);font-weight:400;color:var(--accent);font-size:14px}
+section.sec{scroll-margin-top:110px}
+.sec h2{display:flex;align-items:baseline;gap:10px;font-family:var(--display);font-weight:400;font-size:20px;margin:0 0 10px}
+.sec h2 .no{color:var(--accent);font-size:26px;line-height:1}
+.sec h2 .hint{font-family:var(--body);font-size:12px;color:var(--muted);font-weight:400;margin-left:auto;display:flex;gap:6px;align-items:center}
+.list{display:grid;gap:8px}
+.trow{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:12px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface)}
+.trow.pick{border-color:var(--accent);background:var(--accent-soft)}
+.trow .radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--line-strong);margin-top:3px;flex:none;display:grid;place-items:center}
+.trow.pick .radio{border-color:var(--accent)}
+.trow.pick .radio::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.ed{min-width:0;white-space:pre-wrap;border-radius:6px;padding:2px 4px;margin:-2px -4px;transition:background .15s}
+.ed:hover{background:var(--sunken)}
+.ed:focus{outline:none;background:var(--sunken);box-shadow:inset 0 0 0 1px var(--accent-line)}
+.copy{height:30px;padding:0 10px;border-radius:999px;border:1px solid var(--line-strong);font-size:12px;font-weight:500;color:var(--muted);background:var(--surface);flex:none}
+.copy.done{color:var(--ok);border-color:var(--ok)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tags span{font-size:12px;color:var(--muted);background:var(--sunken);padding:3px 9px;border-radius:999px}
+.tags span.req{color:var(--hot);background:var(--hot-soft);font-weight:700}
+
+.script{display:grid;gap:12px}
+.part{display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:start}
+.part .t{font-family:var(--display);color:var(--accent);font-size:15px;line-height:1.3;padding-top:2px}
+.part .t small{display:block;font-family:var(--body);color:var(--faint);font-size:11px;font-weight:500}
+.tl{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:4px}
+.tl div{height:6px;border-radius:999px;background:var(--accent-line)}
+.tl div:first-child{background:var(--accent)}
+.count{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;font-variant-numeric:tabular-nums;border-top:1px dashed var(--line);padding-top:10px}
+
+.scene{display:grid;gap:10px}
+.scene .sh{display:flex;align-items:center;gap:10px}
+.scene .num{width:34px;height:34px;border-radius:9px;background:var(--ink);color:var(--ground);display:grid;place-items:center;font-family:var(--display);font-size:18px;flex:none}
+.scene .sh .ttl{font-weight:700;font-size:15px;min-width:0;flex:1}
+.time{font-size:12px;color:var(--accent);font-weight:700;background:var(--accent-soft);padding:2px 8px;border-radius:6px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.kv{display:grid;grid-template-columns:44px 1fr;gap:8px;font-size:14px}
+.kv .k{color:var(--faint);font-size:12px;font-weight:700;padding-top:3px}
+
+.prompt{display:grid;gap:8px}
+.prompt .ph{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.prompt .ph b{font-size:13px}
+.prompt .ph b span{color:var(--accent);font-family:var(--display);font-weight:400;margin-right:6px}
+.prompt .ph small{color:var(--faint);font-weight:400}
+.prompt .ed{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.55;background:var(--sunken);padding:10px 12px;margin:0;border-radius:var(--r-sm);border:1px solid var(--line)}
+.prompt .ed:focus{box-shadow:inset 0 0 0 1px var(--accent-line)}
+.note{font-size:12px;color:var(--muted);margin:0 0 10px}
+
+.cap{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface)}
+.cap .n{font-family:var(--display);color:var(--accent);font-size:18px;text-align:center}
+.cap .ed{font-weight:700;font-size:16px;font-family:var(--display);letter-spacing:.2px}
+
+.jp{display:grid;gap:8px}
+.jp div{display:grid;grid-template-columns:58px 1fr;gap:10px;padding:10px 12px;border-radius:var(--r-sm);background:var(--sunken);font-size:14px}
+.jp b{font-family:var(--display);font-weight:400;color:var(--accent);font-size:15px}
+.ck{display:grid;gap:6px}
+.ck label{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r-sm);font-size:14px;cursor:pointer}
+.ck label.done{background:var(--ok-soft);border-color:transparent;color:var(--muted);text-decoration:line-through}
+.ck input{width:18px;height:18px;margin:3px 0 0;accent-color:var(--ok)}
+.ck .ckbar{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px;font-variant-numeric:tabular-nums}
+.foot{margin-top:28px;font-size:12px;color:var(--faint);text-align:center;line-height:1.7}
+
+.sheet-bg{position:fixed;inset:0;background:rgba(10,16,24,.45);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}
+.sheet-bg.open{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;background:var(--surface);border-radius:18px 18px 0 0;max-height:80vh;display:flex;flex-direction:column;transform:translateY(105%);transition:transform .25s;padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -10px 40px rgba(0,0,0,.2)}
+.sheet.open{transform:none}
+@media (prefers-reduced-motion:reduce){.sheet,.sheet-bg{transition:none}}
+.sheet .sh{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+.sheet .sh h3{margin:0;font-family:var(--display);font-weight:400;font-size:20px}
+.sheet .sh p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+.sheet ul{list-style:none;margin:0;padding:8px 16px 16px;overflow-y:auto;display:grid;gap:8px}
+.hitem{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface)}
+.hitem.cur{border-color:var(--accent);background:var(--accent-soft)}
+.hitem .open{text-align:left;min-width:0}
+.hitem .tt{font-weight:700;font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hitem .mm{font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center;margin-top:2px;flex-wrap:wrap}
+.hitem .del{font-size:12px;color:var(--muted);height:30px;padding:0 10px;border-radius:999px;border:1px solid var(--line-strong)}
+.hitem .del.arm{color:var(--hot);border-color:var(--hot)}
+.empty{text-align:center;color:var(--muted);font-size:14px;padding:30px 0}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--ground);padding:10px 16px;border-radius:999px;font-size:13px;font-weight:500;opacity:0;transition:.2s;z-index:60;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width:420px){.part{grid-template-columns:46px 1fr}.cap{grid-template-columns:28px 1fr auto}}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+
+<header class="top"><div class="wrap">
+  <div class="brand"><span class="mark" aria-hidden="true"></span>U잼 영상 기획 도우미</div>
+  <button class="histbtn" id="histBtn" type="button">내 기록 <span class="n" id="histCount">0</span></button>
+</div></header>
+
+<main class="wrap">
+  <div class="intro">
+    <h1>울산 <em>U잼 영상 공모전</em>, 기획안부터 뚝딱</h1>
+    <p>소재 하나면 제목 · 대본 · 장면 · AI 영상 프롬프트 · 자막 · 출품 체크리스트까지. 로그인 없이 바로 쓰고, 결과는 이 기기에 저장돼요.</p>
+  </div>
+
+  <details class="card rules" id="rules">
+    <summary><span>2026 울산광역시 U잼 영상 공모전 요강</span><span class="tag">접수 10.1 ~ 10.16</span><span class="chev">▾</span></summary>
+    <div class="body">
+      <div class="spec">
+        <div><b>화면 비율</b><span>가로형 16:9</span></div>
+        <div><b>길이</b><span>30초 ~ 3분</span></div>
+        <div><b>부문</b><span>일반영상 · AI영상</span></div>
+        <div><b>참가</b><span>개인 또는 4인 이하 팀</span></div>
+      </div>
+      <p><span class="req">필수 해시태그</span> #울산유(U)잼 #2026영상공모전 을 달아 개인 SNS에 전체 공개로 올리고, 구글폼으로 신청서와 영상 링크를 제출합니다.</p>
+      <p><b>심사 기준</b> 기획성 · 완성도 · 독창성 · 활용성 종합 평가. 총 10편 선정, 울산광역시장상과 총 상금 1,100만원(일반 최우수 300만원, AI 최우수 150만원).</p>
+      <p><b>소재</b> 울산을 홍보할 수 있는 내용이면 자유. 관광명소, 산업, 문화, 일상. 장르 제한 없음(브이로그 · 패러디 · 애니메이션 등).</p>
+      <p style="color:var(--faint)">세부 요강은 울산시 누리집 고시공고에서 다시 확인하세요. 접수 마감은 10월 16일 18:00.</p>
+    </div>
+  </details>
+
+  <form class="card form" id="form" autocomplete="off">
+    <div>
+      <label class="lab" for="topic">영상 소재 <small>(울산의 어떤 매력을 담을지)</small></label>
+      <textarea id="topic" placeholder="예) 태화강 십리대숲 아침 산책, 간절곶 일출 보러 가는 자취생, 울산대교 야경과 공단 불빛" maxlength="200"></textarea>
+      <div class="chips scroll" id="spots" style="margin-top:8px"></div>
+    </div>
+    <div>
+      <span class="lab" id="genreLab">장르</span>
+      <div class="chips" id="genres" role="group" aria-labelledby="genreLab"></div>
+    </div>
+    <div class="row2">
+      <div><span class="lab" id="lenLab">영상 길이</span><div class="chips" id="lens" role="group" aria-labelledby="lenLab"></div></div>
+      <div><span class="lab" id="divLab">출품 부문</span><div class="chips" id="divs" role="group" aria-labelledby="divLab"></div></div>
+    </div>
+    <div>
+      <label class="lab" for="audience">누구에게 보여줄 영상? <small>(선택)</small></label>
+      <input id="audience" placeholder="예) 울산 여행 계획 중인 20대, 타지에서 온 대학생" maxlength="60">
+    </div>
+    <div class="btns">
+      <button class="go" id="goBtn" type="submit">기획안 바로 만들기</button>
+      <button class="go ai" id="aiBtn" type="button" hidden><b>AI</b> 로 더 정교하게 만들기</button>
+    </div>
+    <div class="progress" id="progress"><div class="bar"><i id="barFill"></i></div><button class="stop" id="stopBtn" type="button">중지</button></div>
+    <div class="status" id="aiStatus"><span class="dot"></span><span id="aiStatusText">기본 엔진 준비됨 · 로그인 없이 바로 만들 수 있어요</span></div>
+  </form>
+
+  <div id="result"></div>
+
+  <p class="foot">기록, 수정 내용, 체크리스트는 지금 보고 있는 이 기기의 브라우저에만 저장돼요.<br>다른 폰이나 컴퓨터에서는 각자의 기록이 따로 쌓입니다.</p>
+</main>
+
+<div class="sheet-bg" id="sheetBg"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sh"><div><h3 id="sheetTitle">내 기록</h3><p>이 기기에 저장된 기획안</p></div><button class="btn" id="sheetClose" type="button">닫기</button></div>
+  <ul id="histList"></ul>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+const KEY = "ujam-video-helper-v1";
+const $ = (s, r=document) => r.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const REQ_TAGS = ["#울산유(U)잼","#2026영상공모전"];
+
+const GENRES = [["vlog","브이로그"],["info","소개·정보"],["fun","패러디·유머"],["emo","감성 시네마틱"],["ani","애니메이션"]];
+const LENS = [[30,"30초"],[60,"60초"],[90,"90초"]];
+const DIVS = [["ai","AI영상"],["general","일반영상"]];
+const SLOTS = {30:["0~3초","3~9초","9~16초","16~24초","24~30초"],60:["0~5초","5~18초","18~32초","32~48초","48~60초"],90:["0~8초","8~28초","28~50초","50~72초","72~90초"]};
+const SEC = {30:[3,6,7,8,6],60:[5,13,14,16,12],90:[8,20,22,22,18]};
+const CHECKS = ["가로형 16:9로 촬영·편집했다","길이가 30초 이상 3분 이내다","필수 해시태그 #울산유(U)잼 #2026영상공모전 을 달았다","개인 SNS에 전체 공개로 게시했다","구글폼으로 신청서와 영상 링크를 제출했다 (10.1 09:00 ~ 10.16 18:00)","팀이면 4인 이하다","음악·폰트·인물 초상권을 확인했다","AI영상 부문이면 AI 생성 도구 사용을 밝힐 준비가 됐다"];
+
+/* ---------- Ulsan spot knowledge (drives the built-in engine) ---------- */
+const SPOTS = [
+ {id:"taehwa",kw:["태화강","십리대숲","국가정원","대숲","떼까마귀","대나무"],name:"태화강 국가정원",en:"Taehwagang National Garden with the Simnidaesup bamboo forest in Ulsan",area:"중구·남구",
+  desc:"도심 한복판을 흐르는 태화강과 4km 십리대숲. 봄엔 꽃밭, 여름엔 대숲 그늘, 겨울 저녁엔 떼까마귀 군무가 하늘을 덮는다.",fact:"2019년 지정된 대한민국 두 번째 국가정원",
+  shots:[["sweeping aerial drone shot of the Taehwa River winding through Ulsan city, a long green bamboo forest lining its bank","드론으로 내려다본 태화강과 강변을 따라 이어진 십리대숲","도심 한가운데, 국가정원"],
+   ["slow tracking shot walking along a path inside a tall dense bamboo forest, sunlight filtering through the leaves, gentle wind","십리대숲 산책로를 걷는 시점. 잎 사이로 빛이 쏟아진다","4km 초록 터널, 십리대숲"],
+   ["wide shot of colorful seasonal flower fields along the riverbank with people strolling and cycling on a sunny day","강변 꽃밭 사이를 산책하고 자전거 타는 사람들","계절마다 바뀌는 꽃밭"],
+   ["a young traveler sitting on riverside steps taking a photo, calm water reflecting the city skyline","강변 계단에 앉아 사진 찍는 여행자. 잔잔한 물에 비친 도시","여기가 울산이라고?"],
+   ["golden hour wide shot, thousands of rooks swirling over the river as the sky turns orange","해질녘 하늘을 가득 채우는 떼까마귀 군무","저녁 5시, 하늘이 춤춘다"]]},
+ {id:"daewangam",kw:["대왕암","울기등대","출렁다리","일산해수욕장","일산해변","동구 해안"],name:"대왕암공원",en:"Daewangam Park rocky coast in Ulsan Dong-gu",area:"동구",
+  desc:"신라 문무대왕비의 전설이 깃든 바위 해안. 100년 넘은 해송 숲길, 울기등대, 바다 위 출렁다리가 이어진다.",fact:"1906년 세워진 울기등대와 303m 해상 출렁다리",
+  shots:[["aerial shot of jagged coastal rock formations meeting deep blue sea, waves crashing in white foam","푸른 바다와 만나는 기암괴석, 하얗게 부서지는 파도","전설이 잠든 바위, 대왕암"],
+   ["walking shot through a tall pine forest path with dappled light, the sea glimpsed between trunks","해송 숲길을 걷는 시점. 나무 사이로 바다가 보인다","100년 해송 숲길"],
+   ["wide shot of a long suspension bridge over the sea, people crossing, bridge slightly swaying","바다 위 출렁다리를 건너는 사람들","바다 위를 걷는 303m"],
+   ["close-up of a white lighthouse against the sky, seabirds passing, then tilt down to the rocky shore","하늘을 배경으로 선 울기등대, 갈매기가 지난다","1906년부터 이 바다를 지킨 등대"],
+   ["sunrise wide shot, sun rising between the rocks, warm light on the sea, a couple silhouetted on the rocks","바위 사이로 떠오르는 해와 실루엣으로 선 두 사람","동해 첫 햇살, 울산에서"]]},
+ {id:"ganjeol",kw:["간절곶","일출","소망우체통","해돋이","새해"],name:"간절곶",en:"Ganjeolgot Cape in Ulsan Ulju-gun, the earliest sunrise point of the Korean mainland",area:"울주군",
+  desc:"한반도에서 해가 가장 먼저 뜨는 곶. 거대한 소망우체통, 하얀 등대, 탁 트인 바다 잔디밭이 있다.",fact:"매년 1월 1일 해맞이 축제로 전국에서 사람이 모이는 곳",
+  shots:[["pre-dawn wide shot of a grassy cape by the sea, deep blue sky, a few people waiting with coffee","새벽 어스름의 잔디 언덕과 바다, 일출을 기다리는 사람들","대한민국에서 해가 가장 먼저 뜨는 곳"],
+   ["sun rising over the ocean horizon, orange light spilling across the water, lens flare","수평선 위로 떠오르는 해, 바다 위로 번지는 주황빛","오전 7시, 첫 햇살"],
+   ["a giant red mailbox standing on the lawn, a young person dropping a postcard inside","잔디밭의 거대한 소망우체통에 엽서를 넣는 사람","소망우체통에 편지 한 장"],
+   ["white lighthouse on the cape with the sea behind, gentle camera orbit","바다를 등진 하얀 등대를 천천히 도는 카메라","등대 앞 인생샷"],
+   ["wide shot of friends laughing on the cape lawn in morning light, sea sparkling behind","아침 햇살 속 잔디밭에서 웃는 친구들, 반짝이는 바다","새해엔 여기서 만나"]]},
+ {id:"bridge",kw:["울산대교","야경","전망대","염포산","공단 불빛","대교"],name:"울산대교 전망대 야경",en:"Ulsan Grand Bridge and the industrial complex night view from the observatory",area:"동구",
+  desc:"염포산 전망대에서 보는 울산대교와 공단의 불빛. 산업도시 울산이 가장 반짝이는 순간.",fact:"단경간 현수교로는 국내 최장(주경간 1,150m)",
+  shots:[["blue hour timelapse from a hilltop observatory, a long suspension bridge lighting up over the bay","블루아워, 전망대에서 내려다본 울산대교에 불이 켜진다","해가 지면 시작되는 쇼"],
+   ["aerial night shot of a sprawling industrial complex glowing with thousands of lights and steam","수천 개 불빛과 수증기가 피어오르는 공단 야경","산업수도의 밤"],
+   ["close-up of the bridge cables and lights with cars streaming across, long exposure light trails","케이블과 조명, 다리를 건너는 차들의 빛 궤적","1,150m 위를 달리는 불빛"],
+   ["young people at the observatory railing taking night photos, city lights bokeh behind","전망대 난간에서 야경 사진을 찍는 젊은이들","이 야경, 무료입니다"],
+   ["slow pull-back wide shot of the whole bay at night, bridge, port and city lights reflected on water","다리·항구·도시 불빛이 물에 비치는 만 전체를 천천히 빠지며","울산의 밤은 이렇게 빛난다"]]},
+ {id:"whale",kw:["장생포","고래","고래문화마을","고래박물관","고래바다"],name:"장생포 고래문화마을",en:"Jangsaengpo Whale Culture Village in Ulsan",area:"남구",
+  desc:"1970년대 포경마을을 재현한 거리, 고래박물관, 고래바다여행선. 울산이 고래의 도시인 이유.",fact:"반구대 암각화의 고래 그림부터 이어진 고래 도시의 역사",
+  shots:[["wide shot of a retro 1970s Korean fishing village street with old signboards and a whale statue","1970년대 포경마을 거리 세트와 고래 조형물","시간이 멈춘 골목, 장생포"],
+   ["inside a whale museum, a huge whale skeleton hanging from the ceiling, visitors looking up","천장에 매달린 거대한 고래 뼈대를 올려다보는 관람객","이 크기, 실물입니다"],
+   ["a whale-watching cruise ship leaving the harbor, seabirds following, sunny sea","항구를 떠나는 고래바다여행선과 뒤따르는 갈매기","고래 보러 바다로"],
+   ["close-up of a young person in a retro school uniform posing in front of a vintage shop","옛 교복을 입고 옛 상점 앞에서 포즈를 취하는 사람","교복 입고 1970년으로"],
+   ["golden sunset over the harbor with whale-shaped lights turning on along the promenade","노을 진 항구와 하나둘 켜지는 고래 모양 조명","고래의 도시, 울산"]]},
+ {id:"alps",kw:["영남알프스","신불산","간월재","억새","가지산","산행","등산"],name:"영남알프스 간월재 억새",en:"Ganwoljae pass silver grass fields in the Yeongnam Alps mountains, Ulsan",area:"울주군",
+  desc:"해발 900m 간월재를 뒤덮는 은빛 억새평원. 가을이면 산 전체가 바람에 물결친다.",fact:"1,000m급 봉우리 9개가 이어진 영남알프스의 심장",
+  shots:[["aerial shot of rolling mountain ridges covered in silver grass swaying in the wind, autumn light","바람에 물결치는 은빛 억새 능선을 드론으로","가을엔 산이 은빛으로"],
+   ["hiker's point of view walking up a mountain trail, silver grass on both sides taller than the camera","억새가 카메라보다 높은 등산로를 오르는 시점","해발 900m로 가는 길"],
+   ["wide shot of a mountain pass with a small wooden shelter and hikers resting, clouds moving fast","간월재 대피소 앞에서 쉬는 등산객과 빠르게 흐르는 구름","간월재, 잠깐 숨 고르기"],
+   ["close-up of silver grass plumes backlit by low sun, slow motion","역광에 빛나는 억새 이삭 클로즈업, 슬로우모션","바람이 보이는 순간"],
+   ["sunset panorama from the summit, layers of blue mountains fading into the distance","정상에서 본 겹겹이 이어지는 산 능선과 노을","울산에도 알프스가 있다"]]},
+ {id:"bangudae",kw:["반구대","암각화","천전리","대곡","선사","유네스코"],name:"반구대 암각화",en:"Bangudae Petroglyphs, prehistoric rock carvings in Ulsan",area:"울주군",
+  desc:"7천 년 전 사람들이 바위에 새긴 고래와 사냥 장면. 세계에서 가장 오래된 고래잡이 기록.",fact:"2025년 유네스코 세계유산 등재",
+  shots:[["slow aerial shot following a quiet river valley between cliffs, morning mist","안개 낀 아침, 절벽 사이 대곡천을 따라가는 드론","7천 년 전으로 가는 길"],
+   ["close-up of a sandstone cliff face with faint carved images of whales and animals, raking light","비스듬한 빛에 드러나는 고래와 동물 암각화","바위에 새긴 고래"],
+   ["animated overlay of carved whale figures glowing and swimming off the rock into the sky","암각화의 고래들이 빛나며 바위 밖으로 헤엄쳐 나가는 연출","세계에서 가장 오래된 고래잡이 기록"],
+   ["a student looking through a telescope at the cliff across the water, then turning to camera amazed","망원경으로 건너편 암각화를 보고 놀라는 학생","망원경으로 보면 보여요"],
+   ["wide shot of the valley at sunset with the UNESCO plaque in foreground","노을 진 계곡과 전경의 세계유산 표지","울산, 세계유산의 도시"]]},
+ {id:"onggi",kw:["옹기","외고산","도자기","장독","전통"],name:"외고산 옹기마을",en:"Oegosan Onggi Village, traditional earthenware pottery village in Ulsan",area:"울주군",
+  desc:"전국 옹기의 절반이 만들어지는 마을. 장인의 손, 불가마, 마당 가득한 항아리.",fact:"국내 최대 옹기 집산지, 매년 옹기축제 개최",
+  shots:[["wide shot of hundreds of large brown earthenware jars filling a sunny courtyard","햇살 아래 마당을 가득 채운 갈색 옹기 항아리들","항아리 천 개의 마을"],
+   ["close-up of an artisan's muddy hands shaping clay on a spinning wheel","물레 위에서 흙을 빚는 장인의 손 클로즈업","손끝에서 태어나는 옹기"],
+   ["a traditional wood-fired kiln glowing orange, embers flying in the dark","어둠 속 주황빛으로 타오르는 전통 가마와 불티","1,200도의 기다림"],
+   ["a young person trying pottery at a workshop, laughing as the clay wobbles","체험 공방에서 흙이 흔들려 웃음이 터진 참가자","직접 빚어보면 압니다"],
+   ["golden hour drone shot over the village rooftops and jar yards","노을빛 마을 지붕과 옹기 마당을 드론으로","전통이 살아있는 울산"]]},
+ {id:"industry",kw:["산업","현대","조선소","자동차","석유화학","공단","산업수도","공장","크레인"],name:"산업수도 울산",en:"Ulsan, Korea's industrial capital: shipyards, car plants and petrochemical complex",area:"동구·북구·남구",
+  desc:"세계 최대급 조선소, 자동차 공장, 석유화학단지. 대한민국 산업의 심장이 뛰는 도시.",fact:"1962년 특정공업지구 지정 이후 대한민국 수출을 이끈 도시",
+  shots:[["aerial shot of a massive shipyard with giant cranes and a ship under construction, morning light","거대한 크레인과 건조 중인 선박이 보이는 조선소를 드론으로","여기서 만든 배가 세계를 다닌다"],
+   ["wide shot of a car plant line, robots welding with sparks, new cars rolling out","로봇이 용접하는 자동차 생산 라인과 완성차 출고","하루 6천 대가 태어나는 곳"],
+   ["night timelapse of a petrochemical complex glowing with lights and steam","불빛과 수증기가 피어오르는 석유화학단지 야경 타임랩스","밤에도 멈추지 않는 도시"],
+   ["a young engineer in a helmet looking up at a giant ship hull, sense of scale","안전모를 쓴 젊은 엔지니어가 거대한 선체를 올려다본다","이 크기, 실감 나세요?"],
+   ["slow pull-back from the industrial coast to the whole city with mountains behind at sunset","산업 해안에서 산으로 둘러싸인 도시 전체로 빠지는 노을 컷","산업과 자연이 함께, 울산"]]},
+ {id:"jinha",kw:["진하","명선도","서핑","해수욕장","해변","바다","서프"],name:"진하해수욕장과 명선도",en:"Jinha Beach and Myeongseondo island in Ulsan Ulju-gun",area:"울주군",
+  desc:"하얀 모래사장과 걸어서 건너는 섬 명선도. 서퍼들이 모이는 울산의 해변.",fact:"썰물 때 명선도까지 바닷길이 열리는 곳",
+  shots:[["aerial shot of a wide white sand beach curving toward a small pine-covered island at low tide","썰물에 드러난 바닷길과 소나무 섬 명선도를 드론으로","걸어서 섬까지"],
+   ["surfers paddling out and catching small waves in bright sunlight, slow motion","밝은 햇살 아래 파도를 타는 서퍼들, 슬로우모션","울산에서 서핑? 됩니다"],
+   ["walking shot across the exposed sandbar path to the island, sea on both sides","양쪽이 바다인 모래길을 걸어 섬으로 가는 시점","하루 두 번 열리는 길"],
+   ["friends running along the shoreline kicking water, laughing, golden light","노을빛 해변에서 물장구치며 달리는 친구들","여름은 진하에서"],
+   ["sunrise behind the island silhouette, pink sky reflected on wet sand","섬 실루엣 뒤로 떠오르는 해와 젖은 모래에 비친 분홍 하늘","명선도 일출, 놓치지 마세요"]]},
+ {id:"food",kw:["언양불고기","불고기","한우","봉계","먹방","맛집","음식","먹거리","고래고기","막창"],name:"울산 먹거리",en:"Ulsan local food: Eonyang bulgogi and Bonggye hanwoo beef",area:"울주군",
+  desc:"석쇠에 얇게 펴 구운 언양불고기, 숯불 위 봉계 한우. 울산이 고기의 도시라 불리는 이유.",fact:"언양·봉계는 한우 불고기 특구로 지정된 지역",
+  shots:[["close-up of thin marinated beef being pressed onto a wire grill over charcoal, flames licking up","숯불 석쇠 위에 얇게 펴 올린 불고기, 불꽃이 올라온다","언양불고기, 이렇게 굽습니다"],
+   ["slow motion of sizzling beef with juices, steam rising, warm light","육즙과 김이 오르는 고기 클로즈업 슬로우모션","소리부터 맛있다"],
+   ["wide shot of a lively traditional restaurant street with signboards at dusk","해질녘 불고기 식당 간판이 늘어선 거리","한우 불고기 특구"],
+   ["a young person taking a first bite and closing eyes in delight, friends reacting","첫 입에 눈을 감는 사람과 웃는 친구들","이 표정이 답이다"],
+   ["top-down shot of a full table: grilled beef, side dishes, rice, hands reaching in","상다리 휘어지는 상차림을 탑다운으로","울산 오면 무조건"]]},
+ {id:"seuldo",kw:["슬도","방어진","소리","구멍 바위","등대 방파제"],name:"슬도",en:"Seuldo islet in Ulsan Dong-gu with its wave-hollowed rocks",area:"동구",
+  desc:"파도가 바위 구멍을 지나며 거문고 소리를 낸다는 작은 섬. 방파제 끝 빨간 등대와 낚시하는 사람들.",fact:"바위에 난 무수한 구멍이 만드는 파도 소리, 슬도명",
+  shots:[["aerial shot of a tiny rocky islet connected by a breakwater, waves hitting porous rocks","방파제로 이어진 작은 바위섬과 부딪히는 파도","파도가 연주하는 섬"],
+   ["extreme close-up of honeycomb-like holes in dark rock, sea water gushing through","벌집처럼 구멍 난 검은 바위 사이로 솟는 바닷물","구멍마다 다른 소리"],
+   ["walking shot along the breakwater toward a red lighthouse, fishermen on the side","낚시꾼 옆을 지나 빨간 등대로 걸어가는 시점","방어진 끝, 빨간 등대"],
+   ["a young person sitting on the rocks with eyes closed listening to the waves, headphones off","바위에 앉아 눈 감고 파도 소리를 듣는 사람","이어폰 빼고 들어보세요"],
+   ["sunset wide shot, silhouettes on the breakwater, sea glittering","노을 속 방파제 실루엣과 반짝이는 바다","울산 동구의 숨은 명소"]]}
+];
+const GENERIC = {id:"ulsan",name:"울산",en:"Ulsan, South Korea, a city of industry, coast, river and mountains",area:"울산 전역",
+  desc:"산업도시이자 바다·강·산이 한 도시에 있는 곳. 태화강 국가정원, 대왕암, 간절곶, 영남알프스까지 하루에 다 닿는다.",fact:"인구 110만, 대한민국 산업수도이자 고래의 도시",
+  shots:[["fast-paced montage opener: aerial of Ulsan city with river, coast and mountains in one frame","강·바다·산이 한 화면에 담기는 울산 도시 전경 드론","울산, 다 있는 도시"],
+   ["walking through a tall bamboo forest path with sunlight, then quick cut to a flower field by the river","십리대숲 산책로에서 태화강 꽃밭으로 빠른 전환","도심 속 국가정원"],
+   ["sunrise over jagged coastal rocks and a white lighthouse, waves crashing","대왕암 바위와 등대 위로 떠오르는 해","동해 첫 햇살"],
+   ["a young traveler on a suspension bridge over the sea, then at a night observatory with bridge lights","바다 위 출렁다리를 건너고, 밤에는 울산대교 야경 전망대에 선 여행자","낮과 밤이 다른 도시"],
+   ["night aerial of the industrial complex glowing, pull back to the whole city under stars","불빛 가득한 공단에서 별 아래 도시 전체로 빠지는 야경","산업과 자연이 함께, 울산"]]};
+function findSpot(topic){
+  const t = topic.replace(/\s+/g,"");
+  let best = null, bestN = 0;
+  for(const s of SPOTS){ const n = s.kw.filter(k => t.includes(k.replace(/\s+/g,""))).length; if(n > bestN){ best = s; bestN = n; } }
+  return best;
+}
+
+/* ---------- genre voices ---------- */
+const STYLE = {
+  vlog:"handheld vlog style, natural colors, candid feel", info:"clean documentary style, steady gimbal movement, crisp and bright",
+  fun:"playful bright look, quick zooms, exaggerated comedic timing", emo:"cinematic anamorphic look, soft golden light, slow motion, shallow depth of field",
+  ani:"3D animated style, vibrant colors, stylized Pixar-like rendering, smooth camera"
+};
+const VOICE = {
+  vlog:{ titles:s=>[`울산 살면서 처음 가본 ${s.name} 브이로그`,`${s.name}, 하루면 충분해요 (울산 브이로그)`,`친구 데려가면 100% 만족하는 울산 코스`],
+    hook:s=>`오늘은 울산 사람도 잘 모르는 ${s.name}으로 갑니다.`, body:s=>`${s.desc} 직접 가보니 ${s.fact}이라는 말이 왜 나왔는지 알겠더라고요. 걷고, 찍고, 잠깐 앉아 있기만 해도 하루가 금방 갑니다.`,
+    cta:s=>`울산 오면 여기 꼭 넣으세요. 다음 코스는 댓글로 추천받습니다.`, caps:s=>null },
+  info:{ titles:s=>[`${s.name}, 이 3가지 모르고 가면 손해`,`${s.name}이 특별한 이유 (${s.area})`,`울산 여행 1순위, ${s.name} 완벽 가이드`],
+    hook:s=>`${s.name}, 이름만 듣고 지나치셨죠?`, body:s=>`${s.desc} ${s.fact}입니다. 가장 좋은 시간, 가장 예쁜 자리, 놓치기 쉬운 포인트까지 순서대로 보여드릴게요.`,
+    cta:s=>`저장해두고 울산 갈 때 꺼내 보세요. 필수 해시태그는 설명란에.`, caps:s=>null },
+  fun:{ titles:s=>[`${s.name} 처음 간 타지인 특징`,`울산 사람이 ${s.name} 자랑할 때`,`이게 울산이라고? ${s.name} 실화냐`],
+    hook:s=>`울산에는 산업단지밖에 없다고요? 그 말, 취소하러 왔습니다.`, body:s=>`${s.name}. ${s.desc} 자신만만하게 도착했는데, 생각보다 훨씬 커서 당황. 사진 찍다가 시간 다 가서 두 번 당황. 결론은 하나, 여기 진짜 좋습니다.`,
+    cta:s=>`공감했다면 좋아요, 울산 안 와본 친구를 태그하세요.`, caps:s=>null },
+  emo:{ titles:s=>[`${s.name}에서 보낸 가장 조용한 하루`,`울산, ${s.name}이 위로가 되는 순간`,`천천히 걷고 싶은 곳, ${s.name}`],
+    hook:s=>`하루가 유난히 길었던 날, 울산 ${s.name}으로 갔습니다.`, body:s=>`${s.desc} 서두르지 않아도 됐어요. ${s.fact}. 그 시간 속에 잠깐 서 있는 것만으로 마음이 가라앉았습니다.`,
+    cta:s=>`쉬고 싶은 사람에게 이 영상을 보내주세요.`, caps:s=>null },
+  ani:{ titles:s=>[`고래가 안내하는 울산 ${s.name} 여행`,`애니로 보는 울산, ${s.name} 편`,`30초 만에 ${s.name} 한 바퀴 (애니메이션)`],
+    hook:s=>`울산의 작은 고래가 오늘 안내할 곳은 ${s.name}.`, body:s=>`${s.desc} ${s.fact}. 고래를 따라 하늘에서 내려다보고, 골목으로 들어가고, 바다 위로 날아오릅니다.`,
+    cta:s=>`다음엔 어디로 갈까요? 댓글로 알려주세요. 울산 U잼.`, caps:s=>null }
+};
+
+/* ---------- built-in engine (no login, no AI) ---------- */
+function engine(topic, genre, len, div, audience){
+  const spot = findSpot(topic) || GENERIC;
+  const v = VOICE[genre] || VOICE.info, style = STYLE[genre] || STYLE.info;
+  const slots = SLOTS[len] || SLOTS[30], secs = SEC[len] || SEC[30];
+  const shotNames = ["오프닝","시그니처 컷","디테일","사람의 순간","엔딩"];
+  const cams = {vlog:["드론 또는 폰 파노라마, 빠른 컷","걷는 시점 핸드헬드","폰 클로즈업, 자연광","친구가 찍어주는 미디엄샷","노을 타이밍 고정샷"],
+    info:["드론 와이드, 안정된 무빙","짐벌 트래킹","클로즈업 인서트","미디엄샷, 정면","와이드 → 슬로우 줌아웃"],
+    fun:["빠른 줌인, 효과음","핸드헬드, 흔들림 살리기","급격한 클로즈업","리액션 컷, 정면","와이드 + 자막 펀치"],
+    emo:["드론 슬로우 와이드","슬라이더 트래킹, 슬로우모션","매크로 클로즈업, 역광","실루엣 미디엄샷","롱테이크 노을 와이드"],
+    ani:["카메라 플라이스루","캐릭터 따라가는 트래킹","디테일 줌","캐릭터 리액션","줌아웃 엔딩 타이틀"]}[genre] || [];
+  let body = v.body(spot);
+  if(len >= 60) body += " " + spot.shots.slice(1,4).map(s => s[1] + ".").join(" ");
+  if(len >= 90) body += ` ${spot.area}에 있고, 대중교통으로도 갈 수 있어요. 아침과 저녁 분위기가 완전히 달라서 두 번 가도 새롭습니다.`;
+  const hook = v.hook(spot), cta = v.cta(spot);
+  const scenes = spot.shots.map((sh,i) => ({
+    no:i+1, time:slots[i], title:`${shotNames[i]} · ${sh[2].length>10?sh[2].slice(0,10)+"…":sh[2]}`, description:sh[1]+".", camera:cams[i]||"",
+    clips:Math.max(1, Math.round(secs[i]/6)),
+    prompt:`Horizontal 16:9 video, ${sh[0]}, ${spot.en}, ${style}, ${genre==="ani"?"":"photorealistic, "}high detail, smooth motion, no text, no watermark`,
+    caption:sh[2]
+  }));
+  const spotTag = "#" + spot.name.replace(/\s+/g,"");
+  const hashtags = [...REQ_TAGS, "#울산", "#울산여행", spotTag, "#" + (GENRES.find(g=>g[0]===genre)||["","브이로그"])[1].replace(/·.*$/,"")];
+  const judge = {
+    기획성:`${spot.name}을(를) '${hook.replace(/[.。]$/,"")}'라는 한 문장 질문으로 열고, 5장면이 하나의 동선처럼 이어지도록 구성. ${len}초 안에 시작·전개·마무리가 분명함.`,
+    완성도:`장면마다 카메라 지시가 있어 촬영·생성 결과가 일정함. 자막은 20자 이내로 통일하고, 전 장면 16:9 가로 구도 유지.`,
+    독창성:`${spot.fact}이라는 사실을 ${(GENRES.find(g=>g[0]===genre)||["","브이로그"])[1]} 문법으로 풀어 흔한 관광 소개와 차별화. ${scenes[3].caption} 같은 사람 중심 컷이 감정을 만듦.`,
+    활용성:`울산시 SNS·관광 홍보에 그대로 쓸 수 있는 가로형 구성. 필수 해시태그와 지역명이 자막·설명에 자연스럽게 들어감.`
+  };
+  return { spot:spot.name, titles:v.titles(spot), hashtags, script:{hook, body, cta, narration:[hook,body,cta].join(" ")}, scenes, judge };
+}
+
+/* ---------- AI prompt (used only when the viewer chooses AI) ---------- */
+function buildPrompt(topic, genre, len, div, audience){
+  const spot = findSpot(topic);
+  const g = (GENRES.find(x=>x[0]===genre)||["","브이로그"])[1];
+  return `당신은 지역 홍보 숏폼 영상 전문 기획자입니다. '2026 울산광역시 U잼 영상 공모전' 출품용 영상 기획안을 만드세요.
+
+[공모전 조건]
+- 울산의 매력(관광명소·산업·문화·일상)을 홍보하는 내용
+- 가로형 16:9, 길이 ${len}초 (공모 규격 30초~3분)
+- 부문: ${div==="ai"?"AI영상 부문 (AI 생성 영상 클립을 이어 붙여 제작)":"일반영상 부문 (직접 촬영, AI 프롬프트는 촬영 레퍼런스로 활용)"}
+- 심사 기준: 기획성, 완성도, 독창성, 활용성
+- 필수 해시태그: #울산유(U)잼 #2026영상공모전
+
+[요청]
+- 소재: ${topic}
+- 장르: ${g}
+${audience ? "- 대상 시청자: " + audience + "\n" : ""}${spot ? `- 참고 사실: ${spot.name}(${spot.area}). ${spot.desc} ${spot.fact}.\n` : ""}
+[출력 필드]
+- titles: SNS 게시용 바이럴 제목 3개, 각 25자 이내 한국어, 서로 다른 후킹 방식(숫자·질문·반전·공감), 반드시 '울산' 또는 장소명 포함.
+- hashtags: 필수 해시태그 2개를 맨 앞에 넣고 총 7개.
+- script: hook(첫 3초, 시선 잡는 한 문장), body(핵심 내용, 울산의 실제 장소·사실을 구체적으로), cta(행동 유도 한 문장). narration은 hook+body+cta를 이어 붙인 낭독용 전체 대본, 한국어 ${len===30?"150~200자":len===60?"300~380자":"450~550자"}.
+- scenes: 정확히 5개. 각 필드: no, time("0~3초" 형식, 5개 합이 ${len}초), title(10자 이내), description(화면에 보이는 것 한국어 2문장, 실제 울산 장소 묘사), camera(카메라·편집 지시 한 줄), prompt(AI 영상 생성 도구용 영어 프롬프트, "Horizontal 16:9 video,"로 시작하고 "no text, no watermark"로 끝낼 것, 피사체·동작·배경·조명·카메라·스타일 포함, 40~70단어, 실제 장소의 특징을 영어로 묘사), caption(화면 자막, 한국어 20자 이내, 임팩트).
+- judge: 심사 기준별 어필 포인트. {"기획성":"...","완성도":"...","독창성":"...","활용성":"..."} 각 1~2문장.
+
+JSON 객체 하나만 출력. 설명이나 코드 펜스 없이.
+{"titles":["","",""],"hashtags":["#울산유(U)잼","#2026영상공모전","",...],"script":{"hook":"","body":"","cta":"","narration":""},"scenes":[{"no":1,"time":"0~3초","title":"","description":"","camera":"","prompt":"Horizontal 16:9 video, ... no text, no watermark","caption":""}],"judge":{"기획성":"","완성도":"","독창성":"","활용성":""}}`;
+}
+function normalize(d, topic, genre, len, div, audience){
+  const tpl = engine(topic, genre, len, div, audience);
+  const str = v => (typeof v === "string" ? v.trim() : "");
+  const out = { spot: tpl.spot };
+  out.titles = (Array.isArray(d?.titles) ? d.titles.map(str).filter(Boolean) : []).slice(0,3);
+  if(!out.titles.length) out.titles = tpl.titles;
+  let tags = (Array.isArray(d?.hashtags) ? d.hashtags.map(str).filter(Boolean) : []);
+  tags = [...REQ_TAGS, ...tags.filter(t => !REQ_TAGS.includes(t))].slice(0,8);
+  out.hashtags = tags;
+  const s = d?.script || {};
+  out.script = { hook:str(s.hook), body:str(s.body), cta:str(s.cta), narration:str(s.narration) };
+  if(!out.script.narration) out.script.narration = [out.script.hook,out.script.body,out.script.cta].filter(Boolean).join(" ");
+  if(!out.script.narration) out.script = tpl.script;
+  const sc = Array.isArray(d?.scenes) ? d.scenes : [];
+  out.scenes = tpl.scenes.map((f,i) => { const x = sc[i] || {}; return { no:i+1, time:str(x.time)||f.time, title:str(x.title)||f.title, description:str(x.description)||f.description,
+    camera:str(x.camera)||f.camera, clips:f.clips, prompt:str(x.prompt)||f.prompt, caption:str(x.caption)||f.caption }; });
+  const j = d?.judge || {};
+  out.judge = {}; for(const k of Object.keys(tpl.judge)) out.judge[k] = str(j[k]) || tpl.judge[k];
+  return out;
+}
+
+/* ---------- example entry ---------- */
+const EXAMPLE = (() => {
+  const data = engine("태화강 십리대숲 아침 산책", "vlog", 30, "ai", "타지에서 온 대학생");
+  return { id:"example-1", topic:"태화강 십리대숲 아침 산책", genre:"vlog", len:30, div:"ai", audience:"타지에서 온 대학생", source:"example", pick:0, checks:[], createdAt:"2026-09-18T09:00:00+09:00", data };
+})();
+
+/* ---------- state (per device) ---------- */
+let state = null;
+function load(){ try{ const raw = localStorage.getItem(KEY); if(raw){ const s = JSON.parse(raw); if(s && Array.isArray(s.history)) return s; } }catch(e){} return null; }
+let saveT = 0;
+function save(){ clearTimeout(saveT); saveT = setTimeout(()=>{ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }, 250); }
+state = load() || { history:[EXAMPLE], currentId:EXAMPLE.id, genre:"vlog", len:30, div:"ai", draft:"", audience:"" };
+const current = () => state.history.find(h => h.id === state.currentId) || null;
+
+/* ---------- optional AI ---------- */
+let sampleFn = null, aiOff = false;
+const statusEl = $("#aiStatus"), statusText = $("#aiStatusText"), aiBtn = $("#aiBtn");
+function setAiStatus(){
+  const ok = sampleFn && !aiOff;
+  aiBtn.hidden = !ok;
+  statusEl.className = "status on";
+  statusText.textContent = ok ? "기본 엔진 준비됨 · AI 버튼은 내 Claude 계정 사용량으로 동작해요" : "기본 엔진 준비됨 · 로그인 없이 바로 만들 수 있어요";
+}
+(async () => { try{ if(window.claude && typeof window.claude.use === "function") sampleFn = await window.claude.use("sample"); }catch(e){ sampleFn = null; } setAiStatus(); })();
+setAiStatus();
+
+/* ---------- generation ---------- */
+let ctl = null;
+const goBtn = $("#goBtn"), stopBtn = $("#stopBtn"), progress = $("#progress"), barFill = $("#barFill");
+function busy(on, msg){
+  goBtn.disabled = on; aiBtn.disabled = on; progress.classList.toggle("show", on);
+  if(on){ statusEl.className = "status busy"; statusText.textContent = msg; } else { setAiStatus(); barFill.style.width = "0"; }
+}
+function readForm(){
+  return { topic:$("#topic").value.trim(), audience:$("#audience").value.trim(), genre:state.genre, len:state.len, div:state.div };
+}
+function commit(f, data, source){
+  const entry = { id:"e"+Date.now().toString(36)+Math.random().toString(36).slice(2,6), topic:f.topic, genre:f.genre, len:f.len, div:f.div, audience:f.audience, source, pick:0, checks:[], createdAt:new Date().toISOString(), data };
+  state.history.unshift(entry); if(state.history.length > 60) state.history.length = 60;
+  state.currentId = entry.id; save();
+  busy(false); render(); renderHist();
+  $("#result").scrollIntoView({behavior:"smooth", block:"start"});
+  toast(source === "ai" ? "AI 기획안이 완성됐어요" : "기획안이 완성됐어요");
+}
+$("#form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const f = readForm();
+  if(!f.topic){ $("#topic").focus(); toast("영상 소재를 먼저 적어주세요"); return; }
+  busy(true, "기획안을 만드는 중…"); barFill.style.width = "60%";
+  await new Promise(r=>setTimeout(r,300));
+  commit(f, engine(f.topic, f.genre, f.len, f.div, f.audience), "engine");
+});
+aiBtn.addEventListener("click", async () => {
+  const f = readForm();
+  if(!f.topic){ $("#topic").focus(); toast("영상 소재를 먼저 적어주세요"); return; }
+  if(!sampleFn || aiOff){ setAiStatus(); return; }
+  ctl = new AbortController();
+  busy(true, "AI가 기획안을 쓰는 중… 보통 10~60초 걸려요"); barFill.style.width = "8%";
+  let ticks = 0; const tick = setInterval(()=>{ ticks++; if(ticks<40) barFill.style.width = (8 + ticks*1.2) + "%"; }, 1000);
+  try{
+    const raw = await sampleFn.json(buildPrompt(f.topic, f.genre, f.len, f.div, f.audience), {
+      modelTier:"default", cache:false, signal:ctl.signal,
+      onText:({text}) => { barFill.style.width = Math.min(95, 55 + text.length/40) + "%"; statusText.textContent = `작성 중… ${text.length}자`; }
+    });
+    clearInterval(tick);
+    commit(f, normalize(raw, f.topic, f.genre, f.len, f.div, f.audience), "ai");
+  }catch(err){
+    clearInterval(tick); busy(false);
+    const code = err && err.code;
+    if(code === "cancelled"){ toast("생성을 중지했어요"); return; }
+    if(["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"].includes(code)){ aiOff = true; setAiStatus(); toast("AI를 쓸 수 없어요. 기본 엔진으로 만들어주세요"); }
+    else if(code === "rate_limited") toast("요청이 많아요. 잠시 뒤 다시 시도하거나 기본 엔진을 써주세요");
+    else if(code === "invalid_json") toast("AI 답변 형식이 어긋났어요. 한 번 더 눌러보세요");
+    else if(code === "refused") toast("AI가 이 소재를 거절했어요. 소재를 바꿔보세요");
+    else toast("AI 연결이 잠시 불안정해요. 기본 엔진으로 만들어주세요");
+  }
+});
+stopBtn.addEventListener("click", () => { if(ctl) ctl.abort(); });
+
+/* ---------- form chips + drafts ---------- */
+function chips(el, list, cur, key){ el.innerHTML = list.map(([k,l]) => `<button type="button" class="chip" data-k="${k}" aria-pressed="${String(cur)===String(k)}">${l}</button>`).join(""); }
+function renderChips(){ chips($("#genres"), GENRES, state.genre); chips($("#lens"), LENS, state.len); chips($("#divs"), DIVS, state.div); }
+$("#genres").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if(!b) return; state.genre = b.dataset.k; save(); renderChips(); });
+$("#lens").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if(!b) return; state.len = +b.dataset.k; save(); renderChips(); });
+$("#divs").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if(!b) return; state.div = b.dataset.k; save(); renderChips(); });
+$("#spots").innerHTML = SPOTS.map(s => `<button type="button" class="chip spot" data-spot="${esc(s.name)}">${esc(s.name)}</button>`).join("");
+$("#spots").addEventListener("click", e => { const b = e.target.closest("[data-spot]"); if(!b) return; const ta = $("#topic"); ta.value = b.dataset.spot; state.draft = ta.value; save(); ta.focus(); });
+$("#topic").value = state.draft || ""; $("#audience").value = state.audience || "";
+$("#topic").addEventListener("input", e => { state.draft = e.target.value; save(); });
+$("#audience").addEventListener("input", e => { state.audience = e.target.value; save(); });
+
+/* ---------- render ---------- */
+const lbl = (list, k, d) => (list.find(x=>String(x[0])===String(k))||["",d])[1];
+function fmtDate(iso){ const d = new Date(iso); if(isNaN(d)) return ""; return `${d.getMonth()+1}월 ${d.getDate()}일 ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`; }
+const srcBadge = s => s === "ai" ? `<span class="badge ai">AI 생성</span>` : s === "example" ? `<span class="badge ex">예시</span>` : `<span class="badge tpl">기본 엔진</span>`;
+const ed = (path, text, cls="") => `<div class="ed ${cls}" contenteditable="plaintext-only" spellcheck="false" data-path="${path}">${esc(text)}</div>`;
+const cp = (what, label="복사") => `<button type="button" class="copy" data-copy="${what}">${label}</button>`;
+
+function render(){
+  const e = current(); const R = $("#result");
+  if(!e){ R.innerHTML = `<div class="card" style="text-align:center;color:var(--muted)">아직 기록이 없어요. 위에서 소재를 적고 만들어보세요.</div>`; return; }
+  const d = e.data, sc = d.scenes, len = e.len || 30;
+  const chars = d.script.narration.replace(/\s/g,"").length, secs = Math.round(chars/5.5);
+  const okRange = secs >= len*0.8 && secs <= len*1.2;
+  const checks = e.checks || [];
+  R.innerHTML = `
+  <div class="result">
+    <div class="rhead">
+      <h2 class="topic">${esc(e.topic)}</h2>
+      <div class="meta">${srcBadge(e.source)}<span class="badge div">${esc(lbl(DIVS,e.div,"AI영상"))}</span><span>${esc(lbl(GENRES,e.genre,"브이로그"))}</span><span>· 16:9 · ${len}초</span>${e.audience?`<span>· ${esc(e.audience)}</span>`:""}<span>· ${fmtDate(e.createdAt)}</span></div>
+      <div class="actions">
+        <button type="button" class="btn primary" data-act="copyall">전체 복사</button>
+        <button type="button" class="btn" data-act="again">같은 조건으로 다시</button>
+        <button type="button" class="btn danger" data-act="del">삭제</button>
+      </div>
+    </div>
+    <nav class="nav" aria-label="섹션 이동">
+      <a href="#s1"><b>1</b>제목</a><a href="#s2"><b>2</b>대본</a><a href="#s3"><b>3</b>장면</a><a href="#s4"><b>4</b>프롬프트</a><a href="#s5"><b>5</b>자막</a><a href="#s6"><b>6</b>출품</a>
+    </nav>
+
+    <section class="sec card" id="s1">
+      <h2><span class="no">1</span>바이럴 제목<span class="hint">탭해서 최종 제목 선택</span></h2>
+      <div class="list">${d.titles.map((t,i)=>`
+        <div class="trow ${e.pick===i?"pick":""}" data-pick="${i}"><span class="radio" role="radio" aria-checked="${e.pick===i}" tabindex="0"></span>${ed("titles."+i, t)}${cp("title:"+i)}</div>`).join("")}
+      </div>
+      <div class="tags">${d.hashtags.map(h=>`<span class="${REQ_TAGS.includes(h)?"req":""}">${esc(h)}</span>`).join("")}${cp("tags","해시태그 복사")}</div>
+    </section>
+
+    <section class="sec card" id="s2">
+      <h2><span class="no">2</span>${len}초 대본<span class="hint">${cp("script","대본 복사")}</span></h2>
+      <div class="script">
+        <div class="part"><div class="t">훅<small>${esc(sc[0].time)}</small></div>${ed("script.hook", d.script.hook)}</div>
+        <div class="part"><div class="t">본문<small>${esc(sc[1].time.split("~")[0])}~${esc(sc[3].time.split("~")[1])}</small></div>${ed("script.body", d.script.body)}</div>
+        <div class="part"><div class="t">CTA<small>${esc(sc[4].time)}</small></div>${ed("script.cta", d.script.cta)}</div>
+        <div class="tl" aria-hidden="true"><div></div><div></div><div></div><div></div><div></div></div>
+        <div class="count"><span>낭독 기준 약 ${chars}자</span><span>예상 ${secs}초 / 목표 ${len}초 ${okRange?"· 적당해요":secs>len?"· 조금 길어요":"· 조금 짧아요"}</span></div>
+      </div>
+    </section>
+
+    <section class="sec card" id="s3">
+      <h2><span class="no">3</span>장면 구성<span class="hint">5장면 · 가로 16:9</span></h2>
+      <div class="list">${sc.map((s,i)=>`
+        <div class="scene" style="${i?"border-top:1px solid var(--line);padding-top:12px":""}">
+          <div class="sh"><span class="num">${s.no}</span><div class="ttl">${ed("scenes."+i+".title", s.title)}</div><span class="time">${esc(s.time)}</span></div>
+          <div class="kv"><span class="k">화면</span>${ed("scenes."+i+".description", s.description)}</div>
+          <div class="kv"><span class="k">카메라</span>${ed("scenes."+i+".camera", s.camera)}</div>
+        </div>`).join("")}
+      </div>
+    </section>
+
+    <section class="sec card" id="s4">
+      <h2><span class="no">4</span>AI 영상 프롬프트<span class="hint">${cp("prompts","5개 모두 복사")}</span></h2>
+      <p class="note">${e.div==="general"?"일반영상 부문이면 촬영 레퍼런스 이미지나 B컷을 만드는 데 쓰세요. ":""}Runway · Kling · Pika · Sora · Veo 등에 붙여넣는 영어 프롬프트예요. 가로 16:9로 설정하고, 장면당 5~8초 클립을 뽑아 이어 붙이세요.</p>
+      <div class="list">${sc.map((s,i)=>`
+        <div class="prompt"><div class="ph"><b><span>${s.no}</span>${esc(s.title)} · ${esc(s.time)} <small>· 클립 ${s.clips||1}개</small></b>${cp("prompt:"+i)}</div>${ed("scenes."+i+".prompt", s.prompt)}</div>`).join("")}
+      </div>
+    </section>
+
+    <section class="sec card" id="s5">
+      <h2><span class="no">5</span>자막 문구<span class="hint">${cp("captions","자막 복사")}</span></h2>
+      <div class="list">${sc.map((s,i)=>`
+        <div class="cap"><span class="n">${s.no}</span>${ed("scenes."+i+".caption", s.caption)}<span class="time">${esc(s.time)}</span></div>`).join("")}
+      </div>
+    </section>
+
+    <section class="sec card" id="s6">
+      <h2><span class="no">6</span>심사 포인트 &amp; 출품 체크<span class="hint">${checks.length}/${CHECKS.length} 완료</span></h2>
+      <p class="note">심사 기준별로 이 기획이 어떻게 어필하는지 정리했어요. 신청서 '기획 의도'에 그대로 다듬어 쓰세요.</p>
+      <div class="jp">${Object.keys(d.judge).map(k=>`<div><b>${esc(k)}</b>${ed("judge."+k, d.judge[k])}</div>`).join("")}</div>
+      <p class="note" style="margin-top:14px">출품 전 체크리스트 (체크 상태도 이 기기에 저장돼요)</p>
+      <div class="ck">${CHECKS.map((c,i)=>`<label class="${checks.includes(i)?"done":""}"><input type="checkbox" data-check="${i}" ${checks.includes(i)?"checked":""}><span>${esc(c)}</span></label>`).join("")}</div>
+    </section>
+  </div>`;
+}
+
+function setPath(obj, path, val){ const ks = path.split("."); let o = obj; for(let i=0;i<ks.length-1;i++) o = o[ks[i]]; o[ks[ks.length-1]] = val; }
+$("#result").addEventListener("input", e => {
+  const cur = current(); if(!cur) return;
+  const el = e.target.closest("[data-path]"); if(!el) return;
+  setPath(cur.data, el.dataset.path, el.innerText.replace(/\n{3,}/g,"\n\n"));
+  if(el.dataset.path.startsWith("script.")){ const s = cur.data.script; s.narration = [s.hook,s.body,s.cta].filter(Boolean).join(" "); }
+  save();
+});
+$("#result").addEventListener("change", e => {
+  const cb = e.target.closest("[data-check]"); if(!cb) return; const cur = current(); if(!cur) return;
+  const i = +cb.dataset.check; cur.checks = cur.checks || [];
+  if(cb.checked){ if(!cur.checks.includes(i)) cur.checks.push(i); } else cur.checks = cur.checks.filter(x=>x!==i);
+  cb.closest("label").classList.toggle("done", cb.checked);
+  const hint = $("#s6 .hint"); if(hint) hint.textContent = `${cur.checks.length}/${CHECKS.length} 완료`;
+  save();
+});
+$("#result").addEventListener("keydown", e => {
+  if(e.key === "Enter" && e.target.closest(".ed") && (e.target.closest(".trow") || e.target.closest(".cap") || e.target.closest(".ttl"))) e.preventDefault();
+  const r = e.target.closest(".radio"); if(r && (e.key==="Enter"||e.key===" ")){ e.preventDefault(); r.closest("[data-pick]").click(); }
+});
+$("#result").addEventListener("click", e => {
+  const cur = current(); if(!cur) return;
+  const pick = e.target.closest("[data-pick]");
+  if(pick && !e.target.closest(".ed") && !e.target.closest("button")){ cur.pick = +pick.dataset.pick; save(); render(); return; }
+  const c = e.target.closest("[data-copy]"); if(c){ copy(textFor(c.dataset.copy, cur), c); return; }
+  const a = e.target.closest("[data-act]"); if(!a) return;
+  if(a.dataset.act === "copyall") copy(fullText(cur), a);
+  if(a.dataset.act === "again"){ $("#topic").value = cur.topic; $("#audience").value = cur.audience || ""; state.genre = cur.genre; state.len = cur.len || 30; state.div = cur.div || "ai"; state.draft = cur.topic; save(); renderChips(); window.scrollTo({top:0,behavior:"smooth"}); toast("조건을 불러왔어요. 만들기 버튼을 눌러주세요"); }
+  if(a.dataset.act === "del"){
+    if(a.dataset.arm){ state.history = state.history.filter(h=>h.id!==cur.id); state.currentId = state.history[0]?.id || null; save(); render(); renderHist(); toast("삭제했어요"); }
+    else { a.dataset.arm = "1"; a.textContent = "정말 삭제할까요?"; setTimeout(()=>{ if(a.isConnected){ delete a.dataset.arm; a.textContent = "삭제"; } }, 3000); }
+  }
+});
+
+function textFor(what, cur){
+  const d = cur.data;
+  if(what.startsWith("title:")) return d.titles[+what.slice(6)];
+  if(what.startsWith("prompt:")) return d.scenes[+what.slice(7)].prompt;
+  if(what === "tags") return d.hashtags.join(" ");
+  if(what === "script") return d.script.narration;
+  if(what === "prompts") return d.scenes.map(s=>`[${s.no}] ${s.title} (${s.time})\n${s.prompt}`).join("\n\n");
+  if(what === "captions") return d.scenes.map(s=>`${s.no}. (${s.time}) ${s.caption}`).join("\n");
+  return "";
+}
+function fullText(cur){
+  const d = cur.data;
+  return [
+    `■ 2026 울산 U잼 영상 공모전 기획안`, `소재: ${cur.topic}  (${lbl(DIVS,cur.div,"AI영상")} · ${lbl(GENRES,cur.genre,"브이로그")} · 16:9 · ${cur.len||30}초${cur.audience?" · "+cur.audience:""})`,
+    ``, `1. 제목`, ...d.titles.map((t,i)=>`${i===cur.pick?"★":"·"} ${t}`), d.hashtags.join(" "),
+    ``, `2. 대본 (${cur.len||30}초)`, `[훅] ${d.script.hook}`, `[본문] ${d.script.body}`, `[CTA] ${d.script.cta}`,
+    ``, `3. 장면 구성`, ...d.scenes.map(s=>`${s.no}) ${s.time} ${s.title}\n   화면: ${s.description}\n   카메라: ${s.camera}`),
+    ``, `4. AI 영상 프롬프트 (16:9)`, ...d.scenes.map(s=>`${s.no}) ${s.prompt}`),
+    ``, `5. 자막`, ...d.scenes.map(s=>`${s.no}) ${s.caption}`),
+    ``, `6. 심사 포인트`, ...Object.keys(d.judge).map(k=>`[${k}] ${d.judge[k]}`)
+  ].join("\n");
+}
+async function copy(text, btn){
+  let ok = false;
+  try{ await navigator.clipboard.writeText(text); ok = true; }catch(e){
+    try{ const ta = document.createElement("textarea"); ta.value = text; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select(); ok = document.execCommand("copy"); ta.remove(); }catch(e2){}
+  }
+  if(btn && btn.classList.contains("copy")){ const o = btn.textContent; btn.textContent = ok?"복사됨":"실패"; btn.classList.toggle("done", ok); setTimeout(()=>{ btn.textContent = o; btn.classList.remove("done"); }, 1500); }
+  toast(ok ? "클립보드에 복사했어요" : "복사에 실패했어요. 길게 눌러 직접 복사해주세요");
+}
+
+/* ---------- history ---------- */
+const sheet = $("#sheet"), sheetBg = $("#sheetBg");
+function openSheet(o){ sheet.classList.toggle("open", o); sheetBg.classList.toggle("open", o); }
+$("#histBtn").addEventListener("click", ()=>{ renderHist(); openSheet(true); });
+$("#sheetClose").addEventListener("click", ()=>openSheet(false));
+sheetBg.addEventListener("click", ()=>openSheet(false));
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") openSheet(false); });
+function renderHist(){
+  $("#histCount").textContent = state.history.length;
+  const L = $("#histList");
+  if(!state.history.length){ L.innerHTML = `<li class="empty">아직 저장된 기획안이 없어요</li>`; return; }
+  L.innerHTML = state.history.map(h=>`<li><div class="hitem ${h.id===state.currentId?"cur":""}" data-id="${h.id}">
+    <button type="button" class="open"><div class="tt">${esc(h.topic)}</div><div class="mm">${srcBadge(h.source)}<span>${esc(lbl(GENRES,h.genre,"브이로그"))} · ${h.len||30}초</span><span>· ${fmtDate(h.createdAt)}</span></div></button>
+    <button type="button" class="del">삭제</button></div></li>`).join("");
+}
+$("#histList").addEventListener("click", e=>{
+  const item = e.target.closest("[data-id]"); if(!item) return; const id = item.dataset.id;
+  if(e.target.closest(".del")){
+    const b = e.target.closest(".del");
+    if(b.classList.contains("arm")){ state.history = state.history.filter(h=>h.id!==id); if(state.currentId===id) state.currentId = state.history[0]?.id || null; save(); render(); renderHist(); }
+    else { b.classList.add("arm"); b.textContent = "확인"; setTimeout(()=>{ if(b.isConnected){ b.classList.remove("arm"); b.textContent="삭제"; } }, 3000); }
+    return;
+  }
+  state.currentId = id; save(); render(); renderHist(); openSheet(false);
+  $("#result").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+let toastT = 0;
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove("show"), 2400); }
+
+renderChips(); render(); renderHist();
+})();
+</script>
+</body>
+</html>
