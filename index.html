@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<meta name="description" content="2026 울산 U잼 영상 공모전 기획 도우미 (한국어 · 日本語 · Tiếng Việt). 소재만 넣으면 제목·대본·장면·AI 영상 프롬프트·자막·출품 체크리스트를 만들어 줍니다.">
+<meta name="description" content="2026 울산 U잼 영상 공모전 기획 도우미 (한국어 · English · 日本語 · Tiếng Việt). 소재만 넣으면 제목·대본·장면·AI 영상 프롬프트·자막·출품 체크리스트를 만들어 줍니다.">
 <title>U잼 영상 기획 도우미</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +24,7 @@
   --dw:400;
 }
 :root[data-lang="ja"]{--display:"Dela Gothic One","Noto Sans JP",system-ui,sans-serif;--body:"Noto Sans JP","Hiragino Sans","Yu Gothic",system-ui,sans-serif;--dw:400}
-:root[data-lang="vi"]{--display:"Be Vietnam Pro","Noto Sans",system-ui,sans-serif;--body:"Be Vietnam Pro","Noto Sans",system-ui,sans-serif;--dw:800}
+:root[data-lang="en"],:root[data-lang="vi"]{--display:"Be Vietnam Pro","Noto Sans",system-ui,sans-serif;--body:"Be Vietnam Pro","Noto Sans",system-ui,sans-serif;--dw:800}
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --ground:#121820; --surface:#1B232E; --sunken:#151C25; --line:#2A3542; --line-strong:#3A4757;
@@ -59,7 +59,7 @@ button{cursor:pointer;border:0;background:none;padding:0}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;height:56px}
 .brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:var(--dw);font-size:19px;line-height:1.15;min-width:0}
 :root[data-lang="ja"] .brand{font-size:15px}
-:root[data-lang="vi"] .brand{font-size:15px}
+:root[data-lang="vi"] .brand,:root[data-lang="en"] .brand{font-size:15px}
 .brand .mark{width:26px;height:16px;border-radius:4px;background:var(--accent);position:relative;flex:none}
 .brand .mark::after{content:"";position:absolute;left:10px;top:4px;border-left:7px solid var(--accent-ink);border-top:4px solid transparent;border-bottom:4px solid transparent}
 .tools{display:flex;align-items:center;gap:6px;flex:none}
@@ -72,7 +72,7 @@ button{cursor:pointer;border:0;background:none;padding:0}
 .intro{padding-block:22px 10px}
 .intro h1{font-family:var(--display);font-weight:var(--dw);font-size:30px;line-height:1.2;margin:0 0 6px;text-wrap:balance}
 :root[data-lang="ja"] .intro h1{font-size:24px;line-height:1.35}
-:root[data-lang="vi"] .intro h1{font-size:26px}
+:root[data-lang="vi"] .intro h1,:root[data-lang="en"] .intro h1{font-size:26px}
 .intro h1 em{font-style:normal;color:var(--accent)}
 .intro p{margin:0;color:var(--muted);font-size:14px}
 
@@ -191,7 +191,7 @@ section.sec{scroll-margin-top:110px}
 .cap .n{font-family:var(--display);font-weight:var(--dw);color:var(--accent);font-size:18px;text-align:center}
 .cap .ed{font-weight:700;font-size:16px;font-family:var(--display);letter-spacing:.2px}
 :root[data-lang="ja"] .cap .ed{font-size:14px}
-:root[data-lang="vi"] .cap .ed{font-weight:800}
+:root[data-lang="vi"] .cap .ed,:root[data-lang="en"] .cap .ed{font-weight:800}
 
 .jp{display:grid;gap:8px}
 .jp div{display:grid;grid-template-columns:72px 1fr;gap:10px;padding:10px 12px;border-radius:var(--r-sm);background:var(--sunken);font-size:14px}
@@ -231,7 +231,7 @@ section.sec{scroll-margin-top:110px}
 <header class="top"><div class="wrap">
   <div class="brand"><span class="mark" aria-hidden="true"></span><span data-i18n="brand">U잼 영상 기획 도우미</span></div>
   <div class="tools">
-    <nav class="langs" id="langs" aria-label="Language"><a href="?lang=ko" data-lang="ko">KO</a><a href="?lang=ja" data-lang="ja">JA</a><a href="?lang=vi" data-lang="vi">VI</a></nav>
+    <nav class="langs" id="langs" aria-label="Language"><a href="?lang=ko" data-lang="ko">KO</a><a href="?lang=en" data-lang="en">EN</a><a href="?lang=ja" data-lang="ja">JA</a><a href="?lang=vi" data-lang="vi">VI</a></nav>
     <button class="histbtn" id="histBtn" type="button"><span data-i18n="hist">내 기록</span> <span class="n" id="histCount">0</span></button>
   </div>
 </div></header>
@@ -545,6 +545,74 @@ L.vi = {
   aiLang:"Vietnamese", aiLen:{30:"70-90 Vietnamese words",60:"140-180 Vietnamese words",90:"210-270 Vietnamese words"}
  }
 };
+/* ===================== English ===================== */
+L.en = {
+ name:"English", htmlLang:"en", rate:2.6, unit:"words", localTags:["#Ulsan","#VisitUlsan"],
+ genres:{vlog:"Vlog",info:"Info · Guide",fun:"Parody · Comedy",emo:"Cinematic",ani:"Animation"},
+ lens:{30:"30 s",60:"60 s",90:"90 s"}, divs:{ai:"AI video",general:"General video"},
+ slot:(a,b)=>`${a}–${b}s`,
+ judgeLabels:{plan:"Planning",quality:"Quality",orig:"Originality",use:"Usability"},
+ shotNames:["Opener","Signature shot","Detail","Human moment","Ending"],
+ cams:{vlog:["Drone or phone panorama, quick cuts","Handheld walking POV","Phone close-up, natural light","Medium shot filmed by a friend","Locked-off shot timed for sunset"],
+  info:["Wide drone shot, steady movement","Gimbal tracking","Close-up insert","Medium shot, front-facing","Wide, then slow zoom-out"],
+  fun:["Fast zoom-in with sound effect","Handheld, keep the shake","Sudden close-up","Reaction cut, front-facing","Wide + punchy caption"],
+  emo:["Slow wide drone shot","Slider tracking, slow motion","Macro close-up, backlit","Silhouette medium shot","Long-take sunset wide"],
+  ani:["Camera fly-through","Tracking that follows the character","Zoom into detail","Character reaction","Zoom out to end title"]},
+ voice:{
+  vlog:{titles:s=>[`I live in Ulsan and never went to ${s.name} until now (Vlog)`,`${s.name} in one day is enough (Ulsan Vlog)`,`The Ulsan route that never disappoints your friends`],hook:s=>`Today I'm going to ${s.name}, a place even Ulsan locals barely know.`,body:s=>`${s.desc} Once you're there, you get why people say it is ${s.fact}. Walk, shoot, sit for a minute, and the day is gone.`,cta:s=>`If you come to Ulsan, put this on the list. Drop the next stop in the comments.`},
+  info:{titles:s=>[`${s.name}: 3 things you must know before you go`,`Why ${s.name} is special (${s.area})`,`Ulsan's number one stop, the ${s.name} guide`],hook:s=>`${s.name}. You've heard the name and scrolled past, right?`,body:s=>`${s.desc} It is ${s.fact}. Best time, best spot and the point everyone misses, in order.`,cta:s=>`Save this for your Ulsan trip. The required hashtags are in the description.`},
+  fun:{titles:s=>[`Things people do on their first visit to ${s.name}`,`When an Ulsan local brags about ${s.name}`,`This is Ulsan? ${s.name}, seriously?`],hook:s=>`Ulsan is just factories? I came here to take that back.`,body:s=>`${s.name}. ${s.desc} I arrived full of confidence, and it was way bigger than expected: panic one. Took photos until the day was gone: panic two. Conclusion: this place is really good.`,cta:s=>`If you felt that, like this and tag a friend who has never been to Ulsan.`},
+  emo:{titles:s=>[`The quietest day I spent at ${s.name}`,`Ulsan, when ${s.name} becomes comfort`,`A place to walk slowly, ${s.name}`],hook:s=>`On a day that felt unusually long, I went to ${s.name} in Ulsan.`,body:s=>`${s.desc} There was no need to hurry. It is ${s.fact}. Just standing inside that moment for a while was enough to settle my mind.`,cta:s=>`Send this video to someone who needs a rest.`},
+  ani:{titles:s=>[`A whale guides you through ${s.name}, Ulsan`,`Ulsan in animation: the ${s.name} episode`,`${s.name} in 30 seconds (animation)`],hook:s=>`Ulsan's little whale is your guide today, and the stop is ${s.name}.`,body:s=>`${s.desc} It is ${s.fact}. Follow the whale from the sky, into the alleys and out over the sea.`,cta:s=>`Where next? Tell us in the comments. Ulsan U-Jam.`}},
+ extra90:s=>`It is in ${s.area} and reachable by public transport. Morning and evening feel completely different, so a second visit still feels new.`,
+ judge:(s,hook,len,g,cap)=>({plan:`Opens ${s.name} with the one-line question "${hook}", and the 5 scenes connect like a single route. Start, development and ending are clear within ${len} seconds.`,
+  quality:`Every scene has a camera direction, so filmed or AI-generated results stay consistent. Captions stay short and uniform, and every scene keeps a horizontal 16:9 frame.`,
+  orig:`Tells the fact "${s.fact}" in the language of ${g}, setting it apart from generic tourism clips. A human-centered shot like "${cap}" carries the emotion.`,
+  use:`A horizontal format Ulsan City can post directly on its SNS and tourism channels. The required hashtags and place names sit naturally in captions and description.`}),
+ checks:["Filmed and edited in horizontal 16:9","Length between 30 seconds and 3 minutes","Required hashtags #울산유(U)잼 #2026영상공모전 added","Posted publicly on a personal SNS account","Application and video link submitted via Google Form (Oct 1 09:00 – Oct 16 18:00)","Team has 4 members or fewer","Music, fonts and portrait rights checked","If entering the AI division, ready to state which AI tools were used"],
+ example:{topic:"Morning walk in the Simnidaesup bamboo forest, Taehwa River",audience:"University students from other countries"},
+ spots:{
+  taehwa:{name:"Taehwagang National Garden",area:"Jung-gu · Nam-gu",desc:"The Taehwa River flows through the city center beside the 4 km Simnidaesup bamboo forest. Flower fields in spring, bamboo shade in summer, and on winter evenings a murmuration of rooks covers the sky.",fact:"Korea's second national garden, designated in 2019",shots:[["Drone view of the Taehwa River and the bamboo forest running along its bank","A national garden downtown"],["Walking POV inside the bamboo forest, light pouring through the leaves","A 4 km green tunnel"],["People strolling and cycling between riverside flower fields","A new flower field every season"],["A traveler on the riverside steps taking a photo, the city reflected in still water","This is Ulsan?"],["Rooks filling the sunset sky in a swirling murmuration","5 pm, the sky dances"]]},
+  daewangam:{name:"Daewangam Park",area:"Dong-gu",desc:"A rocky coast tied to the legend of Silla's Queen Munmu. A path through 100-year-old pines, the Ulgi lighthouse and a suspension bridge over the sea.",fact:"the Ulgi lighthouse of 1906 and a 303 m suspension bridge over the sea",shots:[["Jagged rocks meeting the blue sea, waves breaking white","A rock where a legend sleeps"],["Walking through the pine forest, sea glimpsed between trunks","A hundred-year pine path"],["People crossing the suspension bridge over the sea","303 m of walking on the sea"],["The Ulgi lighthouse against the sky, gulls passing","A lighthouse guarding this sea since 1906"],["Sunrise between the rocks, two silhouettes on the shore","The East Sea's first light, in Ulsan"]]},
+  ganjeol:{name:"Ganjeolgot Cape",area:"Ulju-gun",desc:"The first place on the Korean mainland to see the sunrise. A giant wish mailbox, a white lighthouse and an open lawn facing the sea.",fact:"the New Year sunrise festival that draws people from all over Korea every January 1",shots:[["The grassy cape and sea before dawn, people waiting with coffee","Where Korea's sun rises first"],["The sun climbing over the horizon, orange light spilling across the sea","7 am, the first light"],["Someone dropping a postcard into the giant wish mailbox","One letter for the wish mailbox"],["The camera slowly circling the white lighthouse against the sea","The photo of a lifetime, lighthouse behind"],["Friends laughing on the lawn in morning light, the sea sparkling","Meet here on New Year's Day"]]},
+  bridge:{name:"Ulsan Bridge night view",area:"Dong-gu",desc:"Ulsan Grand Bridge and the lights of the industrial complex seen from the Yeompo mountain observatory. The moment the industrial city shines brightest.",fact:"Korea's longest single-span suspension bridge (main span 1,150 m)",shots:[["Blue hour from the observatory as the bridge lights come on","The show starts at sunset"],["The industrial complex glowing with thousands of lights and steam","Night in the industrial capital"],["Cables, lights and the light trails of cars crossing","Light racing across 1,150 m"],["Young people at the observatory railing shooting the night view","This view is free"],["Slow pull-back over the whole bay, bridge, port and city lights on the water","This is how Ulsan's night shines"]]},
+  whale:{name:"Jangsaengpo Whale Culture Village",area:"Nam-gu",desc:"A street recreating the 1970s whaling village, a whale museum and whale-watching cruises. The reason Ulsan is the city of whales.",fact:"a whale-city history that begins with the whale carvings at Bangudae",shots:[["The 1970s whaling-village street set with a whale sculpture","An alley where time stopped"],["Visitors looking up at a huge whale skeleton hanging from the ceiling","This size is real"],["The whale-watching ship leaving the harbor, gulls following","Out to sea to meet whales"],["Someone in a vintage school uniform posing in front of an old shop","Back to 1970 in a school uniform"],["Sunset over the harbor as whale-shaped lights switch on","Ulsan, the city of whales"]]},
+  alps:{name:"Ganwoljae silver grass, Yeongnam Alps",area:"Ulju-gun",desc:"A silver-grass plateau covering the 900 m Ganwoljae pass. In autumn the whole mountain ripples in the wind.",fact:"the heart of the Yeongnam Alps, nine peaks above 1,000 m",shots:[["Drone over ridges of silver grass rippling in the wind","In autumn the mountain turns silver"],["Climbing POV on a trail where the grass stands taller than the camera","The way up to 900 m"],["Hikers resting at the Ganwoljae shelter, clouds racing past","Ganwoljae, catch your breath"],["Backlit silver-grass plumes in slow motion","The moment you can see the wind"],["Layered ridges and sunset seen from the summit","Ulsan has its own Alps"]]},
+  bangudae:{name:"Bangudae Petroglyphs",area:"Ulju-gun",desc:"Whales and hunting scenes carved into rock by people 7,000 years ago. The world's oldest record of whaling.",fact:"inscribed as a UNESCO World Heritage site in 2025",shots:[["Drone following the Daegok stream between cliffs in morning mist","The road to 7,000 years ago"],["Whale and animal carvings revealed by raking light","Whales carved in stone"],["The carved whales glow and swim off the rock into the sky","The world's oldest record of whaling"],["A student looking through a telescope at the cliff and gasping","Look through the telescope and you'll see"],["The valley at sunset with the World Heritage plaque in front","Ulsan, a World Heritage city"]]},
+  onggi:{name:"Oegosan Onggi Village",area:"Ulju-gun",desc:"The village that makes half of Korea's onggi earthenware. Artisans' hands, wood-fired kilns and courtyards full of jars.",fact:"Korea's largest onggi producer, with an onggi festival every year",shots:[["Brown onggi jars filling a sunlit courtyard","A village of a thousand jars"],["Close-up of an artisan's hands shaping clay on the wheel","Onggi born at the fingertips"],["A traditional kiln glowing orange in the dark, sparks flying","Waiting at 1,200 degrees"],["A workshop visitor bursting into laughter as the clay wobbles","You only get it once you try"],["Drone over the village roofs and jar yards at sunset","Ulsan where tradition lives"]]},
+  industry:{name:"Ulsan, the industrial capital",area:"Dong-gu · Buk-gu · Nam-gu",desc:"One of the world's largest shipyards, car plants and a petrochemical complex. The city where Korea's industrial heart beats.",fact:"the city that has driven Korea's exports since becoming an industrial zone in 1962",shots:[["Drone over the shipyard with giant cranes and a ship under construction","Ships built here sail the world"],["Robots welding on the car line, finished cars rolling out","Where 6,000 cars are born a day"],["Night timelapse of the petrochemical complex with lights and steam","A city that never stops"],["A young engineer in a helmet looking up at a giant hull","Can you feel this scale?"],["Pull-back from the industrial coast to the mountain-ringed city at sunset","Industry and nature together, Ulsan"]]},
+  jinha:{name:"Jinha Beach and Myeongseondo",area:"Ulju-gun",desc:"A white sand beach and Myeongseondo, an island you can walk to. Ulsan's beach where surfers gather.",fact:"the sea path to Myeongseondo that opens at low tide",shots:[["Drone over the sandbar revealed at low tide and the pine-covered island","Walk to the island"],["Surfers riding waves in bright sunlight, slow motion","Surfing in Ulsan? Yes"],["Walking the sand path with sea on both sides toward the island","A road that opens twice a day"],["Friends running and splashing along the sunset shoreline","Summer belongs to Jinha"],["Sunrise behind the island silhouette, pink sky on wet sand","Don't miss the Myeongseondo sunrise"]]},
+  food:{name:"Ulsan food",area:"Ulju-gun",desc:"Eonyang bulgogi pressed thin and grilled on a wire mesh, Bonggye hanwoo beef over charcoal. Why Ulsan is called the city of meat.",fact:"Eonyang and Bonggye, designated hanwoo bulgogi special zones",shots:[["Thin marinated beef on a charcoal grill, flames rising","This is how Eonyang bulgogi is grilled"],["Slow-motion close-up of sizzling beef, juices and steam","It sounds delicious already"],["A street of bulgogi restaurants lit up at dusk","The hanwoo bulgogi zone"],["Someone closing their eyes at the first bite, friends laughing","That face is the answer"],["A table loaded with dishes seen from above","A must when you come to Ulsan"]]},
+  seuldo:{name:"Seuldo islet",area:"Dong-gu",desc:"A tiny islet where waves passing through holes in the rock are said to sound like a zither. A red lighthouse at the end of the breakwater and people fishing.",fact:"the wave sound made by countless holes in the rock, called Seuldomyeong",shots:[["Drone over the islet joined by a breakwater, waves hitting the porous rock","An island played by the waves"],["Close-up of honeycomb holes in black rock, sea water gushing through","A different sound from every hole"],["Walking the breakwater past the anglers to the red lighthouse","End of Bangeojin, a red lighthouse"],["Someone sitting on the rocks, eyes closed, listening to the waves","Take out your earphones and listen"],["Silhouettes on the breakwater at sunset, the sea glittering","A hidden spot in Ulsan's Dong-gu"]]},
+  ulsan:{name:"Ulsan",area:"all of Ulsan",desc:"An industrial city with sea, river and mountains all in one place. Taehwagang National Garden, Daewangam, Ganjeolgot and the Yeongnam Alps are all reachable in a day.",fact:"a city of 1.1 million, Korea's industrial capital and city of whales",shots:[["Drone over Ulsan with river, sea and mountains in one frame","Ulsan, the city that has it all"],["Quick cut from the bamboo forest path to the Taehwa River flower fields","A national garden in the city"],["Sunrise over the Daewangam rocks and lighthouse","The East Sea's first light"],["A traveler crossing the sea bridge, then at the Ulsan Bridge night observatory","A different city by day and by night"],["From the glowing industrial complex out to the whole city under the stars","Industry and nature together, Ulsan"]]}
+ },
+ ui:{
+  title:"U-Jam Video Planner", brand:"U-Jam Video Planner", hist:"History",
+  h1:`Ulsan <em>U-Jam Video Contest</em>, plan it in seconds`, sub:"One topic gives you titles, a script, scenes, AI video prompts, captions and a submission checklist. No login needed, and results are saved on this device.",
+  rulesTitle:"2026 Ulsan U-Jam Video Contest rules", rulesTag:"Submit Oct 1 – 16", specRatio:"Aspect ratio", specRatioV:"Horizontal 16:9", specLen:"Length", specLenV:"30 s – 3 min", specDiv:"Divisions", specDivV:"General · AI video", specEntry:"Entry", specEntryV:"Individuals or teams of up to 4",
+  reqLabel:"Required hashtags", reqText:"Add #울산유(U)잼 #2026영상공모전, post publicly on a personal SNS account, then submit the application and video link via Google Form.",
+  judgeLabel:"Judging", judgeText:"Planning · quality · originality · usability. 10 works selected, Ulsan Mayor's Award and 11 million won in total prizes (general grand prize 3 million, AI grand prize 1.5 million).",
+  subjLabel:"Topic", subjText:"Anything that promotes Ulsan: tourist spots, industry, culture, daily life. Any genre (vlog · parody · animation and more).", rulesNote:"Check the full rules in the notices on the Ulsan City website. Deadline is Oct 16, 18:00.",
+  topicLab:"Video topic", topicHint:"(which charm of Ulsan?)", topicPh:"e.g. Morning walk in the Taehwa River bamboo forest, going to see the Ganjeolgot sunrise, Ulsan Bridge night view and factory lights",
+  genreLab:"Genre", lenLab:"Video length", divLab:"Division", audLab:"Who is this video for?", audHint:"(optional)", audPh:"e.g. 20-somethings planning an Ulsan trip, international students",
+  go:"Create the plan now", aiBtn:`Refine with <b>AI</b>`, stop:"Stop",
+  statusReady:"Built-in engine ready · works instantly without login", statusAi:"Built-in engine ready · the AI button uses your own Claude account", busyEngine:"Building the plan…", busyAi:"AI is writing the plan… usually 10–60 seconds", writing:n=>`Writing… ${n} characters`,
+  foot:"History, edits and checklists are saved only in the browser of this device.<br>Another phone or computer keeps its own separate history.",
+  sheetTitle:"History", sheetSub:"Plans saved on this device", close:"Close", empty:"No saved plans yet", noEntry:"No history yet. Enter a topic above and create one.",
+  badgeAi:"AI generated", badgeEngine:"Built-in engine", badgeEx:"Example", copyAll:"Copy all", again:"Redo with same settings", del:"Delete", delConfirm:"Really delete?", delOk:"Confirm",
+  nav:["Titles","Script","Scenes","Prompts","Captions","Submit"],
+  s1:"Viral titles", s1hint:"Tap to pick the final title", copy:"Copy", copyTags:"Copy hashtags",
+  s2:len=>`${len}-second script`, s2copy:"Copy script", hookL:"Hook", bodyL:"Body", ctaL:"CTA", countChars:n=>`About ${n} words spoken`, countSecs:(s,len)=>`Est. ${s}s / target ${len}s`, ok:"· just right", long:"· a bit long", short:"· a bit short",
+  s3:"Scene breakdown", s3hint:"5 scenes · horizontal 16:9", screenL:"On screen", cameraL:"Camera",
+  s4:"AI video prompts", s4copy:"Copy all 5", s4note:"English prompts to paste into Runway · Kling · Pika · Sora · Veo and similar tools. Set 16:9, generate 5–8 second clips per scene and edit them together.", s4noteGeneral:"For the general division, use these for reference images or B-roll. ", clips:n=>`· ${n} clip${n>1?"s":""}`,
+  s5:"Captions", s5copy:"Copy captions",
+  s6:"Judging points & submission check", s6done:(a,b)=>`${a}/${b} done`, s6note:"How this plan scores on each judging criterion. Polish it and use it for the 'concept' field of the application.", s6note2:"Pre-submission checklist (ticks are saved on this device too)",
+  toastTopic:"Enter a video topic first", toastDone:"Plan created", toastAiDone:"AI plan created", toastStopped:"Generation stopped", toastAiOff:"AI is not available. Use the built-in engine", toastRate:"Too many requests. Try again later or use the built-in engine", toastJson:"The AI reply was malformed. Try once more", toastRefused:"AI declined this topic. Try a different one", toastUnstable:"AI connection is unstable right now. Use the built-in engine", toastLoaded:"Settings loaded. Press the create button", toastDeleted:"Deleted", toastCopied:"Copied to clipboard", toastCopyFail:"Copy failed. Long-press to copy manually",
+  fullHead:"■ 2026 Ulsan U-Jam Video Contest plan", fullTopic:"Topic", full1:"1. Titles", full2:len=>`2. Script (${len} s)`, full3:"3. Scenes", full4:"4. AI video prompts (16:9)", full5:"5. Captions", full6:"6. Judging points",
+  date:d=>`${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getMonth()]} ${d.getDate()} ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`,
+  aiLang:"English", aiLen:{30:"70-90 English words",60:"140-180 English words",90:"210-270 English words"}
+ }
+};
 /* ===================== app ===================== */
 const $ = (s, r=document) => r.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -556,7 +624,7 @@ function pickLang(){
   if(window.UJAM_LANG && L[window.UJAM_LANG]) return window.UJAM_LANG;
   try{ const s = localStorage.getItem("ujam-lang"); if(s && L[s]) return s; }catch(e){}
   const n = (navigator.language || "").toLowerCase();
-  return n.startsWith("ja") ? "ja" : n.startsWith("vi") ? "vi" : "ko";
+  return n.startsWith("ja") ? "ja" : n.startsWith("vi") ? "vi" : n.startsWith("ko") ? "ko" : n.startsWith("en") ? "en" : "ko";
 }
 const LANG = pickLang(), T = L[LANG], U = T.ui;
 const KEY = "ujam-video-helper-v2-" + LANG;
